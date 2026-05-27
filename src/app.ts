@@ -4,6 +4,7 @@ import 'express-async-errors'; // Catch async/await errors automatically
 import { env } from './config/env.js';
 import logger from './utils/logger.js';
 import { AppError } from './utils/errors.js';
+import authRoutes from './modules/auth/auth.routes.js';
 
 /**
  * Express App Setup
@@ -62,8 +63,16 @@ app.get('/health', (req: Request, res: Response) => {
   res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
-// ========== ROUTES (will be added in Phase 2 Step 3) ==========
-// Each module will register its routes here
+// ========== ROUTES ==========
+// Register all module routes
+app.use('/api/auth', authRoutes);
+
+// Future routes (to be added in later phases):
+// app.use('/api/users', userRoutes);
+// app.use('/api/rooms', roomRoutes);
+// app.use('/api/editor', editorRoutes);
+// app.use('/api/execution', executionRoutes);
+// app.use('/api/chat', chatRoutes);
 
 // ========== 404 HANDLER ==========
 // Route not found
