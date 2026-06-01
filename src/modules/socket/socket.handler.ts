@@ -2,6 +2,9 @@ import logger from '../../utils/logger.js';
 import { getSocket } from '../../config/socket.js';
 import presenceService from '../presence/presence.service.js';
 import { SocketUser, SOCKET_EVENTS, ConnectedUser } from './socket.types.js';
+import { registerRoomSocketHandlers } from '../rooms/room.socket.js';
+import { registerEditorSocketHandlers } from '../editor/editor.socket.js';
+import { registerChatSocketHandlers } from '../chat/chat.socket.js';
 
 /**
  * Socket Event Handlers
@@ -29,6 +32,15 @@ export const setupSocketHandlers = (): void => {
     socket.on('error', (error: any) => {
       logger.error(`❌ Socket error (${socket.id}):`, error);
     });
+
+    // Register room handlers
+    registerRoomSocketHandlers(io, socket);
+
+    // Register editor handlers
+    registerEditorSocketHandlers(io, socket);
+    
+    // Register chat handlers
+    registerChatSocketHandlers(io, socket);
   });
 };
 

@@ -57,6 +57,14 @@ export const SOCKET_EVENTS = {
   PRESENCE_UPDATE: 'presence:update',
   GET_PRESENCE: 'presence:get',
 
+  // Editor events
+  CODE_CHANGE: 'editor:code_change',
+  CURSOR_CHANGE: 'editor:cursor_change',
+  CODE_SAVE: 'editor:save',
+
+  // Chat events
+  CHAT_MESSAGE: 'chat:message',
+
   // Error events
   ERROR: 'error',
   UNAUTHORIZED: 'unauthorized',

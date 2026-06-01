@@ -5,6 +5,8 @@ import { env } from './config/env.js';
 import logger from './utils/logger.js';
 import { AppError } from './utils/errors.js';
 import authRoutes from './modules/auth/auth.routes.js';
+import roomRoutes from './modules/rooms/room.routes.js';
+import executionRoutes from './modules/execution/execution.routes.js';
 
 /**
  * Express App Setup
@@ -69,9 +71,9 @@ app.use('/api/auth', authRoutes);
 
 // Future routes (to be added in later phases):
 // app.use('/api/users', userRoutes);
-// app.use('/api/rooms', roomRoutes);
+app.use('/api/rooms', roomRoutes);
 // app.use('/api/editor', editorRoutes);
-// app.use('/api/execution', executionRoutes);
+app.use('/api/execution', executionRoutes);
 // app.use('/api/chat', chatRoutes);
 
 // ========== 404 HANDLER ==========
