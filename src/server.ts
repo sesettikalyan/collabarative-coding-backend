@@ -1,15 +1,19 @@
+import { createServer } from 'http';
 import app from './app.js';
 import { env } from './config/env.js';
 import { connectDatabase, disconnectDatabase } from './config/database.js';
+import { initializeSocket } from './config/socket.js';
+import { setupSocketHandlers } from './modules/socket/socket.handler.js';
 import logger from './utils/logger.js';
 
 /**
  * Server Entry Point
  *
  * This file:
- * 1. Starts the Express server
+ * 1. Starts the HTTP server (required for Socket.IO)
  * 2. Connects to MongoDB
- * 3. Handles graceful shutdown
+ * 3. Initializes Socket.IO
+ * 4. Handles graceful shutdown
  *
  * Why separate server.ts from app.ts?
  * - app.ts is just middleware and routes (reusable)
@@ -23,12 +27,22 @@ const startServer = async (): Promise<void> => {
     // No point starting server if DB connection fails
     await connectDatabase();
 
-    // Start Express server
-    const server = app.listen(env.port, () => {
+    // Create HTTP server (required for Socket.IO)
+    const httpServer = createServer(app);
+
+    // Initialize Socket.IO
+    initializeSocket(httpServer);
+    setupSocketHandlers();
+
+    // Start HTTP server
+    httpServer.listen(env.port, () => {
       logger.info(`🚀 Server running on http://localhost:${env.port}`);
       logger.info(`📝 Environment: ${env.nodeEnv}`);
       logger.info(`🔗 Frontend URL: ${env.frontendUrl}`);
+      logger.info(`🔌 Socket.IO ready for real-time connections`);
     });
+
+    const server = httpServer;
 
     // ========== GRACEFUL SHUTDOWN ==========
     /**

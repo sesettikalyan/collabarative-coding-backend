@@ -28,6 +28,7 @@ const connectDatabase = async (): Promise<void> => {
       socketTimeoutMS: 45000,
       serverSelectionTimeoutMS: 5000,
       retryWrites: true,
+      family: 4, // Use IPv4, skip trying IPv6
     });
 
     logger.info(`✅ MongoDB connected: ${connection.connection.host}`);
