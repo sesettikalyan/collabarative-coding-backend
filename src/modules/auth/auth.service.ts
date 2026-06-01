@@ -1,4 +1,6 @@
+import mongoose from 'mongoose';
 import User, { IUser } from './auth.model.js';
+import { Room } from '../rooms/room.model.js';
 import { hashPassword, comparePassword } from '../../utils/hash.js';
 import { generateToken } from '../../utils/jwt.js';
 import { validateOrThrow } from '../../middleware/validation.middleware.js';
@@ -202,13 +204,23 @@ class AuthService {
       throw new NotFoundError('User');
     }
 
+    const userObjectId = new mongoose.Types.ObjectId(userId);
+    
+    // Calculate dashboard statistics
+    const roomsCreated = await Room.countDocuments({ owner: userObjectId });
+    const roomsJoined = await Room.countDocuments({ participants: userObjectId });
+
     return {
       userId: user._id,
       email: user.email,
       username: user.username,
       createdAt: user.createdAt,
       lastLoginAt: user.lastLoginAt,
-      // More stats will be added later
+      stats: {
+        roomsCreated,
+        roomsJoined,
+        totalActivity: roomsCreated + roomsJoined,
+      }
     };
   }
 }
