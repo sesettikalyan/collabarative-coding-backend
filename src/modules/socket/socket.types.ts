@@ -42,9 +42,16 @@ export const SOCKET_EVENTS = {
   USER_OFFLINE: 'user:offline',
 
   // Room events
-  JOIN_ROOM: 'room:join',
-  LEAVE_ROOM: 'room:leave',
   ROOM_UPDATED: 'room:updated',
+  ROOM_JOIN: 'room:join',
+  ROOM_JOINED: 'room:joined',
+  ROOM_USER_JOINED: 'room:user_joined',
+  ROOM_LEAVE: 'room:leave',
+  ROOM_LEFT: 'room:left',
+  ROOM_USER_LEFT: 'room:user_left',
+  ROOM_GET_PARTICIPANTS: 'room:get_participants',
+  ROOM_PARTICIPANTS: 'room:participants',
+  ROOM_ERROR: 'room:error',
 
   // Presence events
   PRESENCE_UPDATE: 'presence:update',
