@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { roomService } from './room.service';
+import { roomService } from './room.service.js';
 
 // ─────────────────────────────────────────────
 // RoomController — thin layer between HTTP and service

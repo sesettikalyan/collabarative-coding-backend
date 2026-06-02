@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { roomController } from './room.controller';
+import { roomController } from './room.controller.js';
 import { requireAuth } from '../../middleware/auth.middleware.js';
 import { validateRequest } from '../../middleware/validation.middleware.js';
 import { createRoomSchema } from './room.validation.js';

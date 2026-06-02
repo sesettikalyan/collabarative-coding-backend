@@ -1,12 +1,12 @@
 import mongoose from 'mongoose';
-import { Room, IRoom } from './room.model';
+import { Room, IRoom } from './room.model.js';
 import { CreateRoomDto } from './room.types';
 import {
     NotFoundError,
     AuthorizationError,
     ConflictError,
-} from '../../utils/errors';
-import logger from '../../utils/logger';
+} from '../../utils/errors.js';
+import logger from '../../utils/logger.js';
 
 // ─────────────────────────────────────────────
 // RoomService — all room business logic

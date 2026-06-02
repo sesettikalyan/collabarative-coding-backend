@@ -1,8 +1,8 @@
 import { Server } from 'socket.io';
-import { SocketUser, SOCKET_EVENTS } from '../socket/socket.types';
-import { roomService } from './room.service';
-import presenceService from '../presence/presence.service';
-import logger from '../../utils/logger';
+import { SocketUser, SOCKET_EVENTS } from '../socket/socket.types.js';
+import { roomService } from './room.service.js';
+import presenceService from '../presence/presence.service.js';
+import logger from '../../utils/logger.js';
 
 // ─────────────────────────────────────────────
 // Room Socket Handlers
