@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { Room, IRoom } from './room.model.js';
-import { CreateRoomDto } from './room.types';
+import { CreateRoomDto, SupportedLanguage } from './room.types.js';
 import {
     NotFoundError,
     AuthorizationError,
@@ -35,7 +35,7 @@ class RoomService {
 
     // ── READ ─────────────────────────────────────
     async getRoomById(roomId: string): Promise<IRoom> {
-        const room = await Room.findOne({ roomId, isActive: true })
+        const room = await Room.findOne({ roomId })
             .populate('owner', 'username email')
             .populate('participants', 'username email');
 
@@ -47,13 +47,13 @@ class RoomService {
     }
 
     async getUserRooms(userId: string): Promise<IRoom[]> {
-        // All rooms where user is owner OR participant
+        // All active rooms where user is owner OR participant
         return Room.find({
+            isActive: true,
             $or: [
                 { owner: new mongoose.Types.ObjectId(userId) },
                 { participants: new mongoose.Types.ObjectId(userId) },
             ],
-            isActive: true,
         })
             .populate('owner', 'username email')
             .select('-code') // exclude code — it can be large, not needed for dashboard
@@ -71,7 +71,12 @@ class RoomService {
         }
 
         if (!room.isActive) {
-            throw new ConflictError('This room has been closed');
+            // If the owner rejoins an inactive room, reactivate it
+            if (room.owner.equals(new mongoose.Types.ObjectId(userId))) {
+                room.isActive = true;
+            } else {
+                throw new ConflictError('This room has been closed by the owner');
+            }
         }
 
         if (room.participants.length >= room.maxParticipants) {
@@ -133,6 +138,26 @@ class RoomService {
             { code },
             { new: false } // we don't need the updated doc back
         );
+    }
+
+    // ── UPDATE LANGUAGE ───────────────────────────
+    async updateLanguage(roomId: string, userId: string, language: SupportedLanguage): Promise<IRoom> {
+        const room = await Room.findOne({ roomId });
+
+        if (!room) {
+            throw new NotFoundError(`Room "${roomId}" not found`);
+        }
+
+        if (!room.owner.equals(new mongoose.Types.ObjectId(userId))) {
+            throw new AuthorizationError('Only the room owner can change the language');
+        }
+
+        room.language = language;
+        await room.save();
+
+        logger.info(`Room ${roomId} language changed to ${language} by owner ${userId}`);
+        
+        return this.getRoomById(roomId);
     }
 
     // ── DELETE ────────────────────────────────────

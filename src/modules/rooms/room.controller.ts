@@ -73,6 +73,31 @@ class RoomController {
         });
     };
 
+    // PUT /api/rooms/:roomId/language
+    updateLanguage = async (req: Request, res: Response): Promise<void> => {
+        const userId = req.user!.userId;
+        const { roomId } = req.params;
+        const { language } = req.body;
+        
+        if (!language) {
+            res.status(400).json({ success: false, message: 'Language is required' });
+            return;
+        }
+
+        const room = await roomService.updateLanguage(roomId, userId, language as any);
+        
+        // Broadcast via Socket.IO
+        const { getSocket } = await import('../../config/socket.js');
+        const io = getSocket();
+        io.to(roomId).emit('room:language_updated', { language });
+
+        res.json({
+            success: true,
+            message: 'Language updated successfully',
+            data: { room },
+        });
+    };
+
     // DELETE /api/rooms/:roomId
     deleteRoom = async (req: Request, res: Response): Promise<void> => {
         const userId = req.user!.userId;

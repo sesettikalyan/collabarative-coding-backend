@@ -20,6 +20,7 @@ router.get('/my', roomController.getMyRooms);
 router.post('/', validateRequest({ body: createRoomSchema }), roomController.createRoom);
 router.get('/:roomId', roomController.getRoom);
 router.post('/:roomId/join', roomController.joinRoom);
+router.put('/:roomId/language', roomController.updateLanguage);
 router.delete('/:roomId/leave', roomController.leaveRoom);
 router.delete('/:roomId', roomController.deleteRoom);
 
